@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Iterate.log — Home{% endblock %}
+
+{% block head_extra %}
+<meta name="description" content="Iterate.log — 日々の学びと成長を記録するポートフォリオサイト。" />
+<style>
+  /* ── Hero Section ─────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding: 56px 0 40px;
+  }
+
+  .hero__title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .hero__title span {
+    color: var(--color-accent);
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+    color: var(--color-text-soft);
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  /* ── Section Header ──────────────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--color-border-light);
+  }
+
+  .section-header__title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-soft);
+  }
+
+  .section-header__count {
+    font-size: 0.75rem;
+    color: var(--color-text-soft);
+    font-weight: 400;
+  }
+
+  /* ── Log List ────────────────────────────────────────── */
+  .log-list {
+    list-style: none;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(74, 85, 104, 0.45);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .log-item {
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .log-item:last-child {
+    border-bottom: none;
+  }
+
+  .log-item__link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: background var(--transition);
+  }
+
+  .log-item__link:hover {
+    background: var(--color-bg-soft);
+  }
+
+  .log-item__link:hover .log-item__title {
+    color: var(--color-accent);
+  }
+
+  .log-item__link:hover .log-item__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Date column */
+  .log-item__date {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-soft);
+    letter-spacing: 0.01em;
+    min-width: 96px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Category badge */
+  .log-item__badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-soft);
+    background: var(--color-bg-soft);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .log-item__badge--monthly {
+    border-color: var(--color-border);
+    color: var(--color-text-soft);
+    background: var(--color-bg-soft);
+  }
+
+  /* Title */
+  .log-item__title {
+    flex: 1;
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: var(--color-text);
+    transition: color var(--transition);
+    line-height: 1.5;
+  }
+
+  /* Arrow indicator */
+  .log-item__arrow {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-soft);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all var(--transition);
+  }
+
+  /* ── Empty State ─────────────────────────────────────── */
+  .log-empty {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--color-text-soft);
+    font-size: 0.9rem;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--color-border);
+  }
+
+  .log-empty__icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .hero {
+      padding: 40px 0 28px;
+    }
+
+    .hero__title {
+      font-size: 1.8rem;
+    }
+
+    .log-item__link {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px 16px;
+    }
+
+    .log-item__date {
+      min-width: auto;
+      font-size: 0.75rem;
+    }
+
+    .log-item__title {
+      width: 100%;
+      order: 3;
+      font-size: 0.875rem;
+    }
+
+    .log-item__arrow {
+      display: none;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero" id="hero">
+  <h1 class="hero__title">Iterate<span>.log</span></h1>
+  <p class="hero__subtitle">日々の学びを、積み重ねる。</p>
+</section>
+
+<!-- Log list -->
+<section id="log-section">
+  <div class="section-header">
+    <h2 class="section-header__title">Updates</h2>
+    <span class="section-header__count">{{ entries | length }} entries</span>
+  </div>
+
+  {% if entries %}
+  <ul class="log-list" id="log-list">
+    {% for entry in entries %}
+    <li class="log-item">
+      <a href="/log/{{ entry.type }}/{{ entry.filename }}" class="log-item__link" id="log-{{ loop.index }}">
+        <time class="log-item__date" datetime="{{ entry.date }}">{{ entry.date }}</time>
+        <span class="log-item__badge{% if entry.type == 'monthly' %} log-item__badge--monthly{% endif %}">
+          {{ entry.category if entry.category else ('月次振り返り' if entry.type == 'monthly' else '記録') }}
+        </span>
+        <span class="log-item__title">{{ entry.title }}</span>
+        <svg class="log-item__arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="log-empty" id="log-empty">
+    <div class="log-empty__icon">📝</div>
+    <p>まだ記録がありません。<br />reflections/ にMarkdownを追加してみましょう。</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
