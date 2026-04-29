@@ -1,42 +1,58 @@
 ---
-name: iterate.log
 colors:
-  primary: "#1A365D"
-  secondary: "#4A5568"
-  tertiary: "#0CA678"
-  neutral: "#F8FAFC"
+  primary: "#1E293B"
+  accent: "#10B981"
+  background: "#FFFFFF"
+  surface: "#F1F5F9"
+  text_primary: "#0F172A"
+  text_secondary: "#475569"
+  border: "#E2E8F0"
 typography:
-  h1:
-    fontFamily: "Montserrat, Noto Sans JP, sans-serif"
-    fontSize: "2.5rem"
-    fontWeight: "700"
-  body-md:
-    fontFamily: "Inter, Noto Sans JP, sans-serif"
-    fontSize: "1rem"
-    fontWeight: "400"
+  font_heading: "'Inter', sans-serif"
+  font_body: "'Inter', sans-serif"
+  font_mono: "'JetBrains Mono', monospace"
+  base_size: "16px"
+  line_height: "1.6"
 rounded:
   sm: "0px"
-  md: "2px"
+  md: "0px"
+  lg: "0px"
+  full: "0px"
 spacing:
+  xs: "4px"
   sm: "8px"
   md: "16px"
-  lg: "32px"
+  lg: "24px"
+  xl: "32px"
+  xxl: "48px"
+  xxxl: "64px"
 ---
 
+# DESIGN.md
+
 ## Overview
-社会人としての「信頼感（プロフェッショナル）」と、若々しい「爽やかさ」を両立させたポートフォリオサイトです。
-全体的にカチッとした力強いレイアウトをベースにしつつ、背景のあしらいや区切り線に「幾何学模様（三角形や斜線など）」を取り入れることで、シャープで洗練された印象を与えます。
+**Project:** iterate.log  
+**Type:** Personal Portfolio (Engineering)  
+
+本プロジェクト「iterate.log」は、エンジニアの個人ポートフォリオサイトです。「社会人らしい爽やかさと力強さ」をコアとなるトーン＆マナーとして設定し、技術的な信頼感と洗練されたプロフェッショナリズムを視覚的に伝達します。過度な装飾を排し、コンテンツと実績が際立つミニマルで構造的なデザインを採用します。
 
 ## Colors
-誠実で力強いネイビーを主軸に、爽やかなエメラルドグリーンをアクセントとして配置します。
-- **Primary (#1A365D):** 信頼感と力強さを表す深いネイビー。見出しや主要な要素に使用。
-- **Secondary (#4A5568):** クールなスレートグレー。補足テキストや境界線に使用。
-- **Tertiary (#0CA678):** 爽やかでエネルギッシュなエメラルドグリーン。ボタン、リンク、幾何学模様のアクセントとして視線を誘導します。
-- **Neutral (#F8FAFC):** わずかに青みがかったクリーンな白。全体の背景として使用し、爽やかさを演出します。
+色彩設計は、冷静さと論理性を表すネイビーと、成長や新鮮さを表すエメラルドグリーンのコントラストを軸に構成しています。
+
+* **Primary (`#1E293B` - Slate 800):** 深いネイビーをベースカラーおよび主要なUI要素（ヘッダー、フッター、重要なボタン）に使用し、社会人としての重厚感と誠実さ、力強さを表現します。
+* **Accent (`#10B981` - Emerald 500):** 鮮やかなエメラルドグリーンをアクセントとして配置します。リンク、ホバー状態、強調したいバッジなどに適用し、サイト全体に爽やかな印象と視覚的なリズムを与えます。
+* **Background & Surface (`#FFFFFF`, `#F1F5F9`):** クリーンな白を背景とし、セクションの区切りやカード要素には淡いブルーグレーのSurfaceカラーを用い、情報の階層を明確にします。
 
 ## Typography
-見出しには直線的で幾何学的な美しさを持つフォント（Montserrat等）を採用し、力強さを表現します。本文は可読性の高いモダンなゴシック体を使用し、ユーザーにストレスを与えません。
+エンジニアリングの文脈と、モダンで力強い印象を両立させるタイポグラフィを選択しています。
+
+* **Heading & Body (`Inter`):**
+    可読性が高く、幾何学的でシャープな骨格を持つ `Inter` を採用します。太いウェイト（Bold/ExtraBold）を見出しに使用することで、力強いステートメントを表現します。
+* **Monospace (`JetBrains Mono`):**
+    コードスニペットや技術スタックのタグなど、エンジニアリングに関わる要素には `JetBrains Mono` を使用し、専門性とテクノロジーへの親和性を強調します。
 
 ## Shapes & Patterns
-- **Shapes（形状）:** 幾何学的なトーンに合わせるため、要素の角丸（rounded）はあえて「0px〜2px」とシャープに設定し、力強くソリッドな印象を作ります。
-- **Patterns（装飾）:** UIの背景やセクションの境界には、過度なグラデーションは避け、ソリッドな直線や幾何学的なパターンを時折配置してモダンなアクセントを加えます。
+* **Zero Border Radius:**
+    「力強さ」と「論理性」を強調するため、ボタン、カード、画像などあらゆるUI要素の角丸（`border-radius`）を完全に排除し、`0px` に統一します。これにより、シャープで厳格な印象を与えます。
+* **Geometric Motifs:**
+    背景のあしらいやセクションの境界線、ローディングアニメーションなどに、直線、直角三角形、グリッドなどの「幾何学模様」をモチーフとして取り入れます。これにより、システム化された秩序ある美しさと、エンジニアらしい構築的なアプローチを視覚化します。

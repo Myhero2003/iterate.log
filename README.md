@@ -8,12 +8,18 @@ Vercel へのデプロイを前提にしたシンプルな構成です。
 
 - `/`  
   `reflections/daily/` と `reflections/monthly/` の Markdown を読み込み、Front Matter（title/date/category など）を取得して日付降順で表示
-- `/log/<type>/<filename>`  
-  記事本文を Markdown から HTML に変換して表示
+- `/works`  
+  `works/` ディレクトリ内のプロジェクト一覧をカード形式で表示。ホバー時の浮き上がり演出付き
+- `/works/<id>`  
+  プロジェクトの詳細情報を表示。3D作品やゲーム制作などの実績を紹介
 - `/profile`  
-  `content/profile.md` を表示し、GitHub / X / note のリンクをSNSボタンとして上部に表示
-- デザイン  
-  `DESIGN.md` の仕様（色・フォント・角丸・幾何学トーン）に準拠
+  `content/profile.md` の YAML Front Matter からライフパス（タイムライン）、アイデンティティ（強み）、スキルセットを抽出し、洗練されたUIで表示
+- デザイン切替 (Theme Switcher)  
+  ナビゲーションバーのトグルボタンで、2つの異なるデザインを即座に切り替え可能
+  - **Sharp (Default)**: `DESIGN.md` 準拠。Inter フォント、角丸 0px、Slate カラーのプロフェッショナルな外観
+  - **Dark**: `DESIGN２.md` 準拠。黒背景にネオンイエローのアクセント、ハイコントラストなサイバーパンク・スタイル
+- YouTube & WebGL 対応  
+  実績詳細ページでの紹介動画埋め込みや、WebGL化された成果物の解説に対応
 
 ## Tech Stack
 
@@ -29,6 +35,8 @@ Vercel へのデプロイを前提にしたシンプルな構成です。
 iterate.log/
 ├── api/
 │   └── index.py
+├── works/
+│   └── *.md
 ├── content/
 │   └── profile.md
 ├── reflections/
@@ -40,10 +48,14 @@ iterate.log/
 │   ├── base.html
 │   ├── index.html
 │   ├── detail.html
-│   └── profile.html
+│   ├── profile.html
+│   ├── works.html
+│   └── works_detail.html
 ├── app.py
 ├── requirements.txt
-└── vercel.json
+├── vercel.json
+├── DESIGN.md     (Sharpデザイン定義)
+└── DESIGN２.md    (Darkデザイン定義)
 ```
 
 ## Markdown Format (Front Matter)
@@ -82,6 +94,50 @@ tags:
 本文...
 ```
 
+### Works Example
+
+`/works/` 内に配置します。`order` で表示順を制御できます。
+
+```md
+---
+title: "卒業研究: 3Dポートフォリオ"
+period: "2025年4月 — 2026年2月"
+tags: ["Unity", "Firebase"]
+summary: "バーチャル空間で成果物を閲覧できるシステム。"
+thumbnail_emoji: "🎓"
+order: 1
+---
+
+## 📽️ 紹介映像
+(YouTube iframe...)
+
+## 🚀 卒業後の展開
+(WebGL化の記録など...)
+
+本文...
+```
+
+### Profile (Structured Data)
+
+`content/profile.md` の Front Matter でリッチなコンテンツを管理します。
+
+```yaml
+---
+timeline:
+  - year: 2026
+    event: "エンジニアデビュー"
+identity:
+  - title: "強み"
+    description: "手を動かして学ぶスタイル"
+    icon: "🔨"
+skills:
+  - category: "言語"
+    items:
+      - name: "Python"
+        icon: "🐍"
+---
+```
+
 ## Local Development
 
 ```bash
@@ -94,7 +150,7 @@ python app.py
 アクセス先:
 
 - Home: <http://127.0.0.1:5000/>
-- Detail: `http://127.0.0.1:5000/log/daily/<filename>`
+- Works: <http://127.0.0.1:5000/works>
 - Profile: <http://127.0.0.1:5000/profile>
 
 ## Deploy on Vercel

@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}{{ meta.get('title', 'Project') }} — Iterate.log{% endblock %}
+
+{% block head_extra %}
+<meta name="description" content="{{ meta.get('summary', 'Iterate.log — プロジェクト詳細ページ') }}" />
+<style>
+  /* ── Back Link ───────────────────────────────────────── */
+  .works-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: var(--color-text-soft);
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: color var(--transition);
+  }
+
+  .works-back:hover {
+    color: var(--color-accent);
+  }
+
+  .works-back svg {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--transition);
+  }
+
+  .works-back:hover svg {
+    transform: translateX(-3px);
+  }
+
+  /* ── Project Header ──────────────────────────────────── */
+  .works-header {
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .works-header__emoji {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-light);
+  }
+
+  .works-header__title {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    line-height: 1.35;
+    margin-bottom: 12px;
+  }
+
+  .works-header__period {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--color-text-soft);
+    margin-bottom: 16px;
+  }
+
+  .works-header__period svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.5;
+  }
+
+  /* Tags */
+  .works-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .works-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-soft);
+    color: var(--color-text-soft);
+    border: 1px solid var(--color-border-light);
+    letter-spacing: 0.01em;
+  }
+
+  /* ── Article Body (reuse detail-body styles) ──────────── */
+  .works-body {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    padding: 40px 36px;
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Headings */
+  .works-body h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-top: 36px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .works-body h2:first-child {
+    margin-top: 0;
+  }
+
+  .works-body h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: var(--color-accent);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  .works-body h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-top: 28px;
+    margin-bottom: 12px;
+  }
+
+  /* Paragraphs */
+  .works-body p {
+    margin-bottom: 16px;
+    font-size: 0.925rem;
+    line-height: 1.85;
+    color: var(--color-text);
+  }
+
+  /* Lists */
+  .works-body ul,
+  .works-body ol {
+    padding-left: 20px;
+    margin-bottom: 16px;
+  }
+
+  .works-body li {
+    margin-bottom: 8px;
+    font-size: 0.925rem;
+    line-height: 1.75;
+    color: var(--color-text);
+  }
+
+  .works-body li::marker {
+    color: var(--color-accent);
+  }
+
+  /* Strong */
+  .works-body strong {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  /* Links */
+  .works-body a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--transition);
+  }
+
+  .works-body a:hover {
+    border-bottom-color: var(--color-accent);
+  }
+
+  /* HR */
+  .works-body hr {
+    border: none;
+    height: 1px;
+    background: var(--color-border);
+    margin: 32px 0;
+  }
+
+  /* Tables */
+  .works-body table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 20px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+
+  .works-body thead th {
+    background: var(--color-bg-soft);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .works-body tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border-light);
+    color: var(--color-text);
+    vertical-align: top;
+  }
+
+  .works-body tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .works-body tbody tr {
+    transition: background var(--transition);
+  }
+
+  .works-body tbody tr:hover {
+    background: var(--color-bg-soft);
+  }
+
+  /* Code */
+  .works-body code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-bg-soft);
+    padding: 2px 6px;
+    border-radius: 0;
+    color: var(--color-text);
+    border: 1px solid var(--color-border-light);
+  }
+
+  .works-body pre {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    padding: 20px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+
+  .works-body pre code {
+    background: none;
+    padding: 0;
+    border: none;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  /* Blockquote */
+  .works-body blockquote {
+    margin: 20px 0;
+    padding: 14px 20px;
+    background: var(--color-bg-soft);
+    border-left: 4px solid var(--color-accent-soft);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 0.85rem;
+    color: var(--color-text-soft);
+    line-height: 1.6;
+  }
+
+  .works-body blockquote p {
+    margin-bottom: 0;
+    color: var(--color-text-soft);
+    font-size: 0.85rem;
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .works-header__title {
+      font-size: 1.35rem;
+    }
+
+    .works-header__emoji {
+      width: 52px;
+      height: 52px;
+      font-size: 2rem;
+    }
+
+    .works-body {
+      padding: 28px 20px;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      box-shadow: none;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Back link -->
+<a href="/works" class="works-back" id="back-link">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+  </svg>
+  Works に戻る
+</a>
+
+<!-- Project header -->
+<header class="works-header" id="works-header">
+  {% if meta.get('thumbnail_emoji') %}
+  <div class="works-header__emoji">{{ meta.get('thumbnail_emoji') }}</div>
+  {% endif %}
+
+  <h1 class="works-header__title">{{ meta.get('title', 'Untitled') }}</h1>
+
+  {% if meta.get('period') %}
+  <div class="works-header__period">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+    </svg>
+    {{ meta.get('period') }}
+  </div>
+  {% endif %}
+
+  {% if meta.get('tags') %}
+  <div class="works-tags">
+    {% for tag in meta.get('tags', []) %}
+    <span class="works-tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</header>
+
+<!-- Project body -->
+<article class="works-body" id="works-body">
+  {{ content | safe }}
+</article>
+{% endblock %}

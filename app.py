@@ -16,6 +16,7 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 CONTENT_DIR = BASE_DIR / "content"
 REFLECTIONS_DIR = BASE_DIR / "reflections"
+WORKS_DIR = BASE_DIR / "works"
 
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -159,6 +160,40 @@ def collect_reflections() -> list[dict]:
     return entries
 
 
+def collect_works() -> list[dict]:
+    """Scan works/ directory for project Markdown files.
+
+    Returns a list of dicts sorted by the 'order' front-matter field.
+    Each dict contains: id, title, period, tags, summary,
+    thumbnail_emoji, and order.
+    """
+    entries: list[dict] = []
+
+    if not WORKS_DIR.is_dir():
+        return entries
+
+    for filepath in glob.glob(str(WORKS_DIR / "*.md")):
+        with open(filepath, "r", encoding="utf-8") as f:
+            raw = f.read()
+
+        meta, _body = parse_frontmatter(raw)
+        file_name = Path(filepath).stem  # e.g. 'graduation-research'
+
+        entry = {
+            "id": file_name,
+            "title": meta.get("title") or file_name.replace("-", " ").title(),
+            "period": meta.get("period", ""),
+            "tags": meta.get("tags", []),
+            "summary": meta.get("summary", ""),
+            "thumbnail_emoji": meta.get("thumbnail_emoji", "📁"),
+            "order": meta.get("order", 999),
+        }
+        entries.append(entry)
+
+    entries.sort(key=lambda e: e["order"])
+    return entries
+
+
 # ── Routes ───────────────────────────────────────────────────────────
 
 @app.route("/")
@@ -197,7 +232,7 @@ def log_detail(entry_type: str, filename: str):
 
 @app.route("/profile")
 def profile():
-    """Profile page — renders content/profile.md as HTML."""
+    """Profile page — renders content/profile.md as HTML with structured data."""
     filepath = CONTENT_DIR / "profile.md"
     with open(filepath, "r", encoding="utf-8") as f:
         raw = f.read()
@@ -210,7 +245,42 @@ def profile():
         "profile.html",
         content=content_html,
         profile_title=meta.get("title", "Profile"),
+        tagline=meta.get("tagline", ""),
         social_links=social_links,
+        timeline=meta.get("timeline", []),
+        identity=meta.get("identity", []),
+        skills=meta.get("skills", []),
+    )
+
+
+@app.route("/works")
+def works_index():
+    """Works page — shows all projects as cards."""
+    projects = collect_works()
+    return render_template("works.html", projects=projects)
+
+
+@app.route("/works/<work_id>")
+def works_detail(work_id: str):
+    """Works detail page — render a single project Markdown as HTML."""
+    if "/" in work_id or work_id.startswith("."):
+        abort(404)
+
+    filepath = WORKS_DIR / f"{work_id}.md"
+    if not filepath.is_file():
+        abort(404)
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        raw = f.read()
+
+    meta, body = parse_frontmatter(raw)
+    content_html = load_markdown_html(body)
+
+    return render_template(
+        "works_detail.html",
+        meta=meta,
+        content=content_html,
+        work_id=work_id,
     )
 
 
