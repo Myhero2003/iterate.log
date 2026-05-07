@@ -92,17 +92,23 @@
   }
 
   .work-card__emoji {
-    font-size: 2rem;
-    line-height: 1;
-    flex-shrink: 0;
     width: 48px;
     height: 48px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--color-bg);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border-light);
+    color: var(--color-accent);
+  }
+
+  .work-card__emoji svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    fill: none;
   }
 
   .work-card__header-text {
@@ -262,7 +268,13 @@
     {% for project in projects %}
     <a href="/works/{{ project.id }}" class="work-card" id="work-{{ loop.index }}">
       <div class="work-card__header">
-        <div class="work-card__emoji">{{ project.thumbnail_emoji }}</div>
+        <div class="work-card__emoji">
+          {% if project.thumbnail_svg_content %}
+          {{ project.thumbnail_svg_content | safe }}
+          {% else %}
+          {{ project.thumbnail_emoji }}
+          {% endif %}
+        </div>
         <div class="work-card__header-text">
           <h2 class="work-card__title">{{ project.title }}</h2>
           <div class="work-card__period">

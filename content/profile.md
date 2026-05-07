@@ -24,16 +24,16 @@ timeline:
 identity:
   - title: "成長を続けるエンジニア (Continuous Learner)"
     description: "日々の反復とアップデートを大切にしています。資格の取得に向けた計画的な学習など、目標に向かって着実にスキルを磨き続けることが得意なエンジニアです。"
-    icon: "🔨"
+    svg: "growth.svg"
   - title: "ゼロから形にする開発者 (Developer / Creator)"
     description: "Unityを用いた開発経験があり、コードを書くだけでなく「何を作るか」という要件定義の段階から考えるアプローチが好きです。アイデアを具体的なシステムやコンテンツとして形にしていくプロセスを楽しんでいます。"
-    icon: "🔄"
+    svg: "creator.svg"
   - title: "好奇心旺盛なエクスプローラー (Curious Explorer)"
     description: "大学でVRや教育工学に触れた経験から、新しい技術や表現への探求心を大切にしています。また、週末は雰囲気の良いカフェを開拓したりと、デジタル・アナログ問わずフットワーク軽く行動し、インプットの幅を広げています。"
-    icon: "👁️"
+    svg: "explorer.svg"
   - title: "好きを共有するコミュニケーター (Communicator)"
     description: "記事の投稿やSNSを通じて、自分の好きなことや学んだことを発信しています。また、Discordを活用して仲間と繋がる場を作るなど、情報を分かりやすく言語化し、人と共有することを大切にしています。"
-    icon: "🤝"
+    svg: "communicator.svg"
 skills:
   - category: "Development / Programming"
     items:
@@ -84,7 +84,7 @@ skills:
 
 ---
 
-## ☕ 趣味・関心
+## 趣味・関心 {: .icon-coffee}
 
 | カテゴリ | 詳細 |
 |---------|------|
@@ -94,13 +94,13 @@ skills:
 
 ---
 
-## 📊 GitHub Stats
+## GitHub Stats {: .icon-bar-chart}
 
 ![GitHub Stats](https://github-readme-stats.vercel.app/api?username=Myhero2003&show_icons=true&theme=default&bg_color=ffffff&title_color=6C63FF&icon_color=6C63FF&text_color=1A1A2E&border_color=E8E8E8)
 
 ---
 
-## 📝 note — 最近の記事
+## note — 最近の記事 {: .icon-edit}
 
 <iframe class="note-embed" src="https://note.com/embed/notes/nff0c645ad080" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
 <script async src="https://note.com/scripts/embed.js" charset="utf-8"></script>
@@ -113,7 +113,7 @@ skills:
 
 ---
 
-## 🔗 Links
+## Links {: .icon-link}
 
 - [GitHub](https://github.com/Myhero2003)
 - [X（旧Twitter）](https://twitter.com/mahiro_05_02)

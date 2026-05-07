@@ -8,7 +8,7 @@ tags:
   - Vercel
   - Jinja2
 summary: "日々の学びと成長を記録・公開するためのポートフォリオサイト。Flask + Markdown で構築し、Vercel にデプロイ。"
-thumbnail_emoji: "📝"
+thumbnail_svg: "book.svg"
 order: 3
 ---
 

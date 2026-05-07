@@ -194,9 +194,17 @@
   }
 
   .identity-card__icon {
-    font-size: 1.8rem;
+    width: 32px;
+    height: 32px;
     margin-bottom: 12px;
     display: block;
+    color: var(--color-accent);
+  }
+
+  .identity-card__icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
   }
 
   .identity-card__title {
@@ -573,7 +581,11 @@
   <div class="identity-grid" id="identity-grid">
     {% for item in identity %}
     <div class="identity-card">
+      {% if item.svg_content %}
+      <span class="identity-card__icon">{{ item.svg_content | safe }}</span>
+      {% else %}
       <span class="identity-card__icon">{{ item.icon }}</span>
+      {% endif %}
       <h3 class="identity-card__title">{{ item.title }}</h3>
       <p class="identity-card__desc">{{ item.description }}</p>
     </div>

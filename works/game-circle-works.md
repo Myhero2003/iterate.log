@@ -7,7 +7,7 @@ tags:
   - チーム開発
   - ゲームデザイン
 summary: "大学のゲーム制作サークルで制作した複数のゲーム作品。チーム開発を通じて、企画・設計・実装のプロセスを学んだ。"
-thumbnail_emoji: "🎮"
+thumbnail_svg: "controller.svg"
 order: 2
 ---
 

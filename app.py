@@ -59,18 +59,18 @@ def load_content_markdown(filename: str) -> str:
 # Mapping from social link key to SVG filename in svg/ directory
 SOCIAL_SVG_MAP = {
     "github": "github.svg",
-    "x": None,  # X logo is PNG, will use inline SVG path
+    "x": "X.svg",
     "note": "note.svg",
     "instagram": "Instagram.svg",
 }
 
 
 def read_svg_content(svg_filename: str) -> str:
-    """Read an SVG file from the svg/ directory and return its content.
+    """Read an SVG file from the static/svg/ directory and return its content.
 
     Returns empty string if file not found.
     """
-    svg_path = BASE_DIR / "svg" / svg_filename
+    svg_path = BASE_DIR / "static" / "svg" / svg_filename
     if svg_path.is_file():
         with open(svg_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -110,10 +110,6 @@ def extract_social_links(raw_markdown: str) -> list[dict]:
         # Load SVG content for this social link
         svg_file = SOCIAL_SVG_MAP.get(key)
         svg_content = read_svg_content(svg_file) if svg_file else ""
-
-        # For X (Twitter), use an inline SVG path since we only have PNG
-        if key == "x" and not svg_content:
-            svg_content = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1227" fill="currentColor"><path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"/></svg>'
 
         socials.append(
             {
@@ -212,6 +208,9 @@ def collect_works() -> list[dict]:
         meta, _body = parse_frontmatter(raw)
         file_name = Path(filepath).stem  # e.g. 'graduation-research'
 
+        svg_file = meta.get("thumbnail_svg")
+        svg_content = read_svg_content(svg_file) if svg_file else ""
+
         entry = {
             "id": file_name,
             "title": meta.get("title") or file_name.replace("-", " ").title(),
@@ -219,6 +218,7 @@ def collect_works() -> list[dict]:
             "tags": meta.get("tags", []),
             "summary": meta.get("summary", ""),
             "thumbnail_emoji": meta.get("thumbnail_emoji", "📁"),
+            "thumbnail_svg_content": svg_content,
             "order": meta.get("order", 999),
         }
         entries.append(entry)
@@ -274,6 +274,15 @@ def profile():
     content_html = load_markdown_html(body)
     social_links = extract_social_links(raw)
 
+    # Load inline SVG content for identity items
+    identity = meta.get("identity", [])
+    for item in identity:
+        svg_file = item.get("svg")
+        if svg_file:
+            item["svg_content"] = read_svg_content(svg_file)
+        else:
+            item["svg_content"] = ""
+
     # Load inline SVG content for skill icons
     skills = meta.get("skills", [])
     for category in skills:
@@ -291,7 +300,7 @@ def profile():
         tagline=meta.get("tagline", ""),
         social_links=social_links,
         timeline=meta.get("timeline", []),
-        identity=meta.get("identity", []),
+        identity=identity,
         skills=skills,
     )
 

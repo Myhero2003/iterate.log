@@ -246,6 +246,33 @@
 
     [data-theme='dark'] .theme-toggle__icon-sharp { display: none; }
     html:not([data-theme='dark']) .theme-toggle__icon-dark { display: none; }
+    /* ── Markdown Heading Icons ────────────────────────── */
+    [class*="icon-"]::before {
+      content: '';
+      display: inline-block;
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: -0.15em;
+      margin-right: 0.5em;
+      background-color: var(--color-accent);
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+    }
+
+    .icon-video::before { -webkit-mask-image: url(/static/svg/video.svg); mask-image: url(/static/svg/video.svg); }
+    .icon-rocket::before { -webkit-mask-image: url(/static/svg/rocket.svg); mask-image: url(/static/svg/rocket.svg); }
+    .icon-globe::before { -webkit-mask-image: url(/static/svg/globe.svg); mask-image: url(/static/svg/globe.svg); }
+    .icon-controller::before { -webkit-mask-image: url(/static/svg/controller.svg); mask-image: url(/static/svg/controller.svg); }
+    .icon-shield::before { -webkit-mask-image: url(/static/svg/shield.svg); mask-image: url(/static/svg/shield.svg); }
+    .icon-box::before { -webkit-mask-image: url(/static/svg/box.svg); mask-image: url(/static/svg/box.svg); }
+    .icon-coffee::before { -webkit-mask-image: url(/static/svg/coffee.svg); mask-image: url(/static/svg/coffee.svg); }
+    .icon-bar-chart::before { -webkit-mask-image: url(/static/svg/bar-chart.svg); mask-image: url(/static/svg/bar-chart.svg); }
+    .icon-edit::before { -webkit-mask-image: url(/static/svg/edit.svg); mask-image: url(/static/svg/edit.svg); }
+    .icon-link::before { -webkit-mask-image: url(/static/svg/link.svg); mask-image: url(/static/svg/link.svg); }
   </style>
 
   {% block head_extra %}{% endblock %}
@@ -290,6 +317,9 @@
   <!-- Footer -->
   <footer class="site-footer">
     <p>&copy; 2026 <a href="/">Iterate.log</a> — 日々の学びを、積み重ねる。</p>
+    <p style="margin-top: 8px; font-size: 0.7rem; opacity: 0.7;">
+      Icons by <a href="https://icons8.com/" target="_blank" rel="noopener noreferrer">Icons8</a>
+    </p>
   </footer>
 
   {% block scripts %}{% endblock %}
