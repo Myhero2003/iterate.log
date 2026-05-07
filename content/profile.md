@@ -1,11 +1,11 @@
 ---
-title: "Profile"
+title: "Profile - MY HERO"
 name: "mahiro"
 tagline: "日々の学びを、積み重ねる。"
 timeline:
   - year: 2003
     event: "福岡県で生まれる"
-  - year: 2009
+  - year: 2010
     event: "小学校入学。初めてゲームに触れ、ものづくりへの興味が芽生える"
   - year: 2015
     event: "中学入学"
@@ -22,55 +22,57 @@ timeline:
   - year: 2026
     event: "大学卒業 → 現在、関東でエンジニアとして研修中"
 identity:
-  - title: "つくって学ぶ"
-    description: "座学よりも手を動かしてモノを作ることで理解を深めるスタイル。「動くもの」を作ることが最大のモチベーション。"
+  - title: "成長を続けるエンジニア (Continuous Learner)"
+    description: "日々の反復とアップデートを大切にしています。資格の取得に向けた計画的な学習など、目標に向かって着実にスキルを磨き続けることが得意なエンジニアです。"
     icon: "🔨"
-  - title: "反復と記録"
-    description: "同じことでも繰り返し取り組み、毎回少しずつ改善する。その過程を記録して振り返ることで、確実に成長につなげる。"
+  - title: "ゼロから形にする開発者 (Developer / Creator)"
+    description: "Unityを用いた開発経験があり、コードを書くだけでなく「何を作るか」という要件定義の段階から考えるアプローチが好きです。アイデアを具体的なシステムやコンテンツとして形にしていくプロセスを楽しんでいます。"
     icon: "🔄"
-  - title: "ユーザー視点"
-    description: "技術的な正しさだけでなく、使う人の体験を常に意識する。UIデザインにも関心があり、心地よいインターフェースを目指す。"
+  - title: "好奇心旺盛なエクスプローラー (Curious Explorer)"
+    description: "大学でVRや教育工学に触れた経験から、新しい技術や表現への探求心を大切にしています。また、週末は雰囲気の良いカフェを開拓したりと、デジタル・アナログ問わずフットワーク軽く行動し、インプットの幅を広げています。"
     icon: "👁️"
-  - title: "チームで成果を出す"
-    description: "個人の技術力だけでなく、チームとして最大限の成果を出すことを重視。コミュニケーションと設計の工夫で貢献する。"
+  - title: "好きを共有するコミュニケーター (Communicator)"
+    description: "記事の投稿やSNSを通じて、自分の好きなことや学んだことを発信しています。また、Discordを活用して仲間と繋がる場を作るなど、情報を分かりやすく言語化し、人と共有することを大切にしています。"
     icon: "🤝"
 skills:
-  - category: "プログラミング"
+  - category: "Development / Programming"
     items:
       - name: "Python"
-        icon: "🐍"
+        svg: "python.svg"
       - name: "C#"
-        icon: "⚙️"
+      - name: "C言語"
+      - name: "R"
       - name: "HTML/CSS"
-        icon: "🌐"
       - name: "SQL"
-        icon: "🗃️"
-  - category: "フレームワーク / エンジン"
-    items:
       - name: "Unity"
-        icon: "🎮"
-      - name: "Flask"
-        icon: "🌶️"
+        svg: "unity.svg"
+  - category: "Backend / Infrastructure"
+    items:
       - name: "Firebase"
-        icon: "🔥"
       - name: "Photon Fusion"
-        icon: "⚡"
-  - category: "ツール"
+      - name: "Flask"
+      - name: "Vercel"
+      - name: "Linux"
+      - name: "Raspberry Pi"
+        svg: "rasberrypi.svg"
+  - category: "Development Tools"
     items:
       - name: "Git / GitHub"
-        icon: "🐙"
+        svg: "github.svg"
       - name: "VS Code"
-        icon: "💻"
-      - name: "DaVinci Resolve"
-        icon: "🎬"
-      - name: "YMM4"
-        icon: "🎤"
       - name: "Notion"
-        icon: "📓"
+  - category: "Creative / Design"
+    items:
       - name: "Figma"
-        icon: "🎨"
-      - name: "Vercel"
-        icon: "▲"
+        svg: "Figma.svg"
+      - name: "Canva"
+        svg: "canva.svg"
+      - name: "Blender"
+        svg: "blender.svg"
+      - name: "DaVinci Resolve"
+        svg: "davinci-resolve.svg"
+      - name: "OBS Studio"
+        svg: "obs-studio.svg"
 ---
 
 # About Me
@@ -88,7 +90,6 @@ skills:
 |---------|------|
 | **eSports** | スマブラSP・スト6（観戦もプレイも好き） |
 | **カフェ巡り** | 落ち着ける空間を探すのが好き。 |
-| **デスク環境** | 白環境（ホワイトセットアップ）を追求中 |
 | **ゲーム制作** | Unity での開発経験あり。今後も趣味で続けたい |
 
 ---

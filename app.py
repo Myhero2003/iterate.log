@@ -56,6 +56,30 @@ def load_content_markdown(filename: str) -> str:
     return load_markdown_html(body)
 
 
+# Mapping from social link key to SVG filename in svg/ directory
+SOCIAL_SVG_MAP = {
+    "github": "github.svg",
+    "x": None,  # X logo is PNG, will use inline SVG path
+    "note": "note.svg",
+    "instagram": "Instagram.svg",
+}
+
+
+def read_svg_content(svg_filename: str) -> str:
+    """Read an SVG file from the svg/ directory and return its content.
+
+    Returns empty string if file not found.
+    """
+    svg_path = BASE_DIR / "svg" / svg_filename
+    if svg_path.is_file():
+        with open(svg_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        # Strip XML declaration if present
+        content = re.sub(r'<\?xml[^?]*\?>', '', content).strip()
+        return content
+    return ""
+
+
 def extract_social_links(raw_markdown: str) -> list[dict]:
     """Extract known social links from markdown text."""
     matches = re.findall(r"\[([^\]]+)\]\((https?://[^\s)]+)\)", raw_markdown)
@@ -66,16 +90,16 @@ def extract_social_links(raw_markdown: str) -> list[dict]:
         lower_url = url.lower()
         if "github.com" in lower_url:
             key = "github"
-            icon = "github"
             name = "GitHub"
         elif "twitter.com" in lower_url or "x.com" in lower_url:
             key = "x"
-            icon = "x"
             name = "X"
         elif "note.com" in lower_url:
             key = "note"
-            icon = "note"
             name = "note"
+        elif "instagram.com" in lower_url:
+            key = "instagram"
+            name = "Instagram"
         else:
             continue
 
@@ -83,12 +107,21 @@ def extract_social_links(raw_markdown: str) -> list[dict]:
             continue
         seen.add(key)
 
+        # Load SVG content for this social link
+        svg_file = SOCIAL_SVG_MAP.get(key)
+        svg_content = read_svg_content(svg_file) if svg_file else ""
+
+        # For X (Twitter), use an inline SVG path since we only have PNG
+        if key == "x" and not svg_content:
+            svg_content = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1227" fill="currentColor"><path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"/></svg>'
+
         socials.append(
             {
                 "key": key,
                 "label": name if not label else label,
                 "url": url,
-                "icon": icon,
+                "icon": key,
+                "svg_content": svg_content,
             }
         )
 
@@ -241,6 +274,16 @@ def profile():
     content_html = load_markdown_html(body)
     social_links = extract_social_links(raw)
 
+    # Load inline SVG content for skill icons
+    skills = meta.get("skills", [])
+    for category in skills:
+        for item in category.get("items", []):
+            svg_file = item.get("svg")
+            if svg_file:
+                item["svg_content"] = read_svg_content(svg_file)
+            else:
+                item["svg_content"] = ""
+
     return render_template(
         "profile.html",
         content=content_html,
@@ -249,7 +292,7 @@ def profile():
         social_links=social_links,
         timeline=meta.get("timeline", []),
         identity=meta.get("identity", []),
-        skills=meta.get("skills", []),
+        skills=skills,
     )
 
 
