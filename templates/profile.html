@@ -337,7 +337,8 @@
     gap: 8px;
   }
 
-  .profile-content h2::before {
+  /* Decorative bar for headings, but skip when heading has an icon- class */
+  .profile-content h2:not([class*="icon-"])::before {
     content: '';
     display: inline-block;
     width: 4px;
@@ -420,6 +421,16 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     transition: box-shadow var(--transition), transform var(--transition);
+  }
+
+  /* Make externally embedded stat images (e.g. GitHub readme-stats) clearer */
+  .profile-content img[src*="github-readme-stats"] {
+    max-width: 580px;
+    background: var(--color-bg-card);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-md);
   }
 
   .profile-content img:hover {
@@ -535,6 +546,30 @@
     }
   }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // Replace github-readme-stats images with a friendly fallback on error
+  document.querySelectorAll('img[src*="github-readme-stats"]').forEach(function(img){
+    // If image already failed to load, trigger replacement
+    function replace(){
+      var wrapper = document.createElement('div');
+      wrapper.className = 'github-stats-fallback';
+      wrapper.innerHTML = '<div style="padding:12px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg-card);max-width:580px;">'
+        + '<strong style="display:block;margin-bottom:6px;color:var(--color-text)">GitHub Stats — 現在利用不可</strong>'
+        + '<p style="margin:0;color:var(--color-text-soft)">外部サービスが一時的に利用できません。直接 <a href="https://github.com/Myhero2003" target="_blank" rel="noopener">GitHub を表示</a>してください。</p>'
+        + '</div>';
+      img.replaceWith(wrapper);
+    }
+
+    img.addEventListener('error', replace);
+    // If image has already finished loading but naturalWidth is 0, replace as well
+    if(img.complete && img.naturalWidth === 0){ replace(); }
+  });
+});
+</script>
 {% endblock %}
 
 {% block content %}

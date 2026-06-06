@@ -7,7 +7,7 @@ from pathlib import Path
 
 import markdown
 import yaml
-from flask import Flask, abort, render_template
+from flask import Flask, abort, render_template, send_from_directory
 
 app = Flask(__name__)
 
@@ -334,6 +334,13 @@ def works_detail(work_id: str):
         content=content_html,
         work_id=work_id,
     )
+
+
+# Serve prototype files (so iframe at /prototypes/... works in dev)
+@app.route('/prototypes/<path:filename>')
+def prototypes_files(filename: str):
+    prototypes_dir = str(BASE_DIR / 'prototypes')
+    return send_from_directory(prototypes_dir, filename)
 
 
 # ── Local development ───────────────────────────────────────────────

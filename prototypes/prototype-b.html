@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prototype B — Interactive Project Cards</title>
+  <style>
+    :root{--bg:#0f1720;--card:#0b1220;--muted:#94a3b8;--accent:#60a5fa}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Noto Sans JP",sans-serif;background:linear-gradient(180deg,#071025 0%,#07162a 60%);color:#e6eef8}
+    .wrap{max-width:1100px;margin:48px auto;padding:24px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    h1{font-size:1.6rem;margin:0}
+    p.lead{margin:0;color:var(--muted)}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;margin-top:28px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(2,6,23,0.6);transform:translateY(20px) scale(.995);opacity:0;transition:transform .45s cubic-bezier(.2,.9,.3,1),opacity .45s ease,box-shadow .2s ease}
+    .card.visible{transform:none;opacity:1}
+    .card-inner{display:flex;flex-direction:column;height:100%}
+    .thumb{height:140px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;color:#031027;font-weight:700}
+    .content{padding:16px;flex:1;display:flex;flex-direction:column}
+    .title{font-size:1.05rem;margin:0 0 8px}
+    .desc{color:var(--muted);font-size:.92rem;margin:0 0 12px;flex:1}
+    .meta{display:flex;gap:8px;align-items:center}
+    .tag{background:rgba(255,255,255,0.04);color:var(--muted);padding:6px 8px;border-radius:999px;font-size:.8rem}
+
+    .card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 36px rgba(2,6,23,0.75)}
+    .card:focus-within{outline:2px solid rgba(96,165,250,.18)}
+
+    /* CTA */
+    .cta{margin-left:auto;background:var(--accent);color:#04203a;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(2,6,23,.6),rgba(2,6,23,.8));z-index:60}
+    .modal-backdrop.open{display:flex}
+    .modal{background:linear-gradient(180deg,#07172b,#061123);width:min(880px,94%);border-radius:12px;padding:20px;box-shadow:0 10px 40px rgba(2,6,23,.8)}
+    .modal h2{margin:0 0 8px}
+    .modal .meta{margin-bottom:12px}
+    .modal .links{display:flex;gap:12px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+
+    /* Entrance animation control */
+    @media (prefers-reduced-motion: reduce){.card,.card:hover{transition:none;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Projects</h1>
+        <p class="lead">ホバーで詳細。クリックでCase Studyをモーダル表示します。</p>
+      </div>
+      <div>
+        <button class="btn" id="viewAll">All Projects</button>
+      </div>
+    </header>
+
+    <section class="grid" id="grid">
+      <!-- Example cards -->
+      <article class="card" tabindex="0" data-title="Unity: 2Dアクション" data-desc="短い説明：Unityで作った2Dアクションゲームのプロトタイプ。" data-stack="Unity, C#" data-demo="#" data-github="#">
+        <div class="card-inner">
+          <div class="thumb">Unity</div>
+          <div class="content">
+            <h3 class="title">2Dアクション（Prototype）</h3>
+            <p class="desc">ステージ設計とキャラクター制御の基礎実装。UIとコアシステムを検証。</p>
+            <div class="meta">
+              <span class="tag">Unity</span>
+              <span class="tag">C#</span>
+              <button class="cta open-detail">Details</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" data-title="Web: ポートフォリオ" data-desc="この静的サイトのリニューアルプロトタイプ。" data-stack="HTML,CSS,JS" data-demo="#" data-github="#">
+        <div class="card-inner">
+          <div class="thumb">Web</div>
+          <div class="content">
+            <h3 class="title">Portfolio Revamp</h3>
+            <p class="desc">トップページの動きとプロジェクトカードのUI改善を行い、誘導率を向上。</p>
+            <div class="meta">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <button class="cta open-detail">Details</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" data-title="Tool: Affinity検証記事" data-desc="Affinityのフリー化に伴う比較レビュー記事。" data-stack="Writing, Design" data-demo="#" data-github="#">
+        <div class="card-inner">
+          <div class="thumb">Affinity</div>
+          <div class="content">
+            <h3 class="title">Affinity レビュー記事</h3>
+            <p class="desc">Photoshop代替としての実務適性検証。操作感とワークフローの可否を確認。</p>
+            <div class="meta">
+              <span class="tag">記事</span>
+              <span class="tag">デザイン</span>
+              <button class="cta open-detail">Details</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- duplicating a few cards to show grid behavior -->
+      <article class="card" tabindex="0" data-title="R&D: 測定機器ツール" data-desc="オシロスコープ学習用ツールのハンズオンまとめ。" data-stack="Hardware, Documentation" data-demo="#" data-github="#">
+        <div class="card-inner">
+          <div class="thumb">R&D</div>
+          <div class="content">
+            <h3 class="title">測定機器ハンズオン</h3>
+            <p class="desc">機器の取り扱い・計測例・学びを体系化したドキュメント。</p>
+            <div class="meta">
+              <span class="tag">Hardware</span>
+              <span class="tag">Doc</span>
+              <button class="cta open-detail">Details</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" data-title="C: 学習プロジェクト" data-desc="C言語で実装したアルゴリズムと演習教材。" data-stack="C" data-demo="#" data-github="#">
+        <div class="card-inner">
+          <div class="thumb">C</div>
+          <div class="content">
+            <h3 class="title">C言語演習集</h3>
+            <p class="desc">基本アルゴリズムの実装・メモ。教育用途に整備中。</p>
+            <div class="meta">
+              <span class="tag">C</span>
+              <span class="tag">Algorithms</span>
+              <button class="cta open-detail">Details</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="btn" id="close">Close</button>
+      <h2 id="modal-title"></h2>
+      <div class="meta" id="modal-stack"></div>
+      <p id="modal-desc"></p>
+      <div class="links">
+        <a id="modal-demo" class="btn" href="#" target="_blank">Demo</a>
+        <a id="modal-github" class="btn" href="#" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Entrance animation using IntersectionObserver
+    const cards = document.querySelectorAll('.card');
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting) e.target.classList.add('visible');
+      });
+    },{threshold:0.15});
+    cards.forEach(c=>io.observe(c));
+
+    // Modal logic
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalStack = document.getElementById('modal-stack');
+    const modalDemo = document.getElementById('modal-demo');
+    const modalGithub = document.getElementById('modal-github');
+    const closeBtn = document.getElementById('close');
+
+    function openDetail(card){
+      const title = card.dataset.title;
+      const desc = card.dataset.desc;
+      const stack = card.dataset.stack;
+      const demo = card.dataset.demo;
+      const github = card.dataset.github;
+      modalTitle.textContent = title;
+      modalDesc.textContent = desc;
+      modalStack.innerHTML = '';
+      stack.split(',').forEach(s=>{
+        const span = document.createElement('span');
+        span.className = 'tag'; span.style.marginRight='6px'; span.textContent = s.trim();
+        modalStack.appendChild(span);
+      });
+      modalDemo.href = demo; modalGithub.href = github;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.open-detail').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{ const card = e.target.closest('.card'); openDetail(card); });
+    });
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    // Accessibility: open on Enter when focused
+    cards.forEach(card=>{
+      card.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openDetail(card); });
+    });
+  </script>
+</body>
+</html>

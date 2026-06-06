@@ -153,6 +153,20 @@ python app.py
 - Works: <http://127.0.0.1:5000/works>
 - Profile: <http://127.0.0.1:5000/profile>
 
+## Prototype Preview
+
+During development there's a small prototype page you can preview directly. The Flask app serves files under `/prototypes/` so you can open interactive prototypes in an iframe or directly in the browser.
+
+- Prototype (interactive project cards): <http://127.0.0.1:5000/prototypes/prototype-b.html>
+
+If you want to embed or test prototypes, start the dev server and open the URL above.
+
+## GitHub Stats note
+
+The profile page embeds an external image from `github-readme-stats` to show contribution/summary graphs. That service is hosted by a third party (Vercel) and can be temporarily unavailable (HTTP 5xx). The site includes a client-side fallback that replaces the image with a short message and a link to your GitHub profile when the external image fails to load.
+
+If your GitHub stats do not appear on `/profile`, you can verify the image URL directly in the browser (see `content/profile.md`) or update the `username=` parameter in that URL to your GitHub username.
+
 ## Deploy on Vercel
 
 このプロジェクトは `vercel.json` で全ルートを `api/index.py` にルーティングします。
