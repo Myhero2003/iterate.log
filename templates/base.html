@@ -25,8 +25,13 @@
       --color-accent-rgb: 16, 185, 129;
       --color-border:    #E2E8F0;
       --color-border-light: #E2E8F0;
-      --color-pattern-1: rgba(30, 41, 59, 0.06);
-      --color-pattern-2: rgba(30, 41, 59, 0.04);
+      --color-pattern-1: rgba(30, 41, 59, 0.05);
+      --color-pattern-2: rgba(30, 41, 59, 0.03);
+      --color-nav-bg: #1E293B;
+      --color-nav-text: rgba(255, 255, 255, 0.68);
+      --color-nav-text-hover: #FFFFFF;
+      --color-footer-bg: #1E293B;
+      --color-footer-text: rgba(255, 255, 255, 0.52);
 
       --font-heading: 'Inter', 'Noto Sans JP', sans-serif;
       --font-body: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -51,8 +56,13 @@
       --color-accent-rgb: 212, 247, 0;
       --color-border:    #333333;
       --color-border-light: #222222;
-      --color-pattern-1: rgba(212, 247, 0, 0.08);
-      --color-pattern-2: rgba(212, 247, 0, 0.05);
+      --color-pattern-1: rgba(212, 247, 0, 0.06);
+      --color-pattern-2: rgba(212, 247, 0, 0.03);
+      --color-nav-bg: #050505;
+      --color-nav-text: rgba(255, 255, 255, 0.60);
+      --color-nav-text-hover: #FFFFFF;
+      --color-footer-bg: #000000;
+      --color-footer-text: rgba(255, 255, 255, 0.42);
 
       --font-heading: 'Inter', 'Noto Sans JP', sans-serif;
       --radius-sm: 0px;
@@ -66,7 +76,7 @@
     }
 
     [data-theme='dark'] .site-nav {
-      background: rgba(0, 0, 0, 0.9);
+      background: var(--color-nav-bg);
       border-bottom: 2px solid var(--color-accent);
     }
 
@@ -86,9 +96,9 @@
       color: var(--color-text);
       background-color: var(--color-bg);
       background-image:
-        linear-gradient(135deg, var(--color-pattern-1) 1px, transparent 1px),
-        linear-gradient(315deg, var(--color-pattern-2) 1px, transparent 1px);
-      background-size: 28px 28px;
+        linear-gradient(to right, var(--color-pattern-1) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--color-pattern-2) 1px, transparent 1px);
+      background-size: 40px 40px;
       line-height: 1.6;
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
@@ -100,10 +110,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--color-border);
+      background: var(--color-nav-bg);
+      border-bottom: none;
     }
 
     .site-nav__inner {
@@ -117,12 +125,12 @@
     }
 
     .site-nav__logo {
-      font-size: 1.15rem;
-      font-weight: 700;
-      font-family: var(--font-heading);
-      color: var(--color-text);
+      font-size: 1.05rem;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      color: var(--color-nav-text-hover);
       text-decoration: none;
-      letter-spacing: -0.02em;
+      letter-spacing: 0;
       transition: color var(--transition);
     }
 
@@ -143,7 +151,7 @@
     .site-nav__links a {
       font-size: 0.875rem;
       font-weight: 500;
-      color: var(--color-text-soft);
+      color: var(--color-nav-text);
       text-decoration: none;
       position: relative;
       transition: color var(--transition);
@@ -162,7 +170,7 @@
     }
 
     .site-nav__links a:hover {
-      color: var(--color-text);
+      color: var(--color-nav-text-hover);
     }
 
     .site-nav__links a:hover::after {
@@ -194,8 +202,8 @@
       text-align: center;
       padding: 32px 24px;
       font-size: 0.8rem;
-      color: var(--color-text-soft);
-      border-top: 1px solid var(--color-border-light);
+      color: var(--color-footer-text);
+      background: var(--color-footer-bg);
     }
 
     .site-footer a {
@@ -221,8 +229,8 @@
     /* ── Theme Toggle ────────────────────────────────────── */
     .theme-toggle {
       background: none;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-soft);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--color-nav-text);
       width: 32px;
       height: 32px;
       display: flex;
@@ -236,7 +244,7 @@
     .theme-toggle:hover {
       border-color: var(--color-accent);
       color: var(--color-accent);
-      background: var(--color-bg-soft);
+      background: rgba(var(--color-accent-rgb), 0.1);
     }
 
     .theme-toggle svg {

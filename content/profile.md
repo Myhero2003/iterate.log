@@ -20,7 +20,7 @@ timeline:
   - year: 2025
     event: "卒業研究スタート。3Dバーチャルポートフォリオシステムの開発を行う"
   - year: 2026
-    event: "大学卒業 → 現在、関東でエンジニアとして研修中"
+    event: "大学卒業 → 配属前研修を経て、神戸でエンジニアとして勤務中"
 identity:
   - title: "成長を続けるエンジニア (Continuous Learner)"
     description: "日々の反復とアップデートを大切にしています。資格の取得に向けた計画的な学習など、目標に向かって着実にスキルを磨き続けることが得意なエンジニアです。"
@@ -44,6 +44,8 @@ skills:
       - name: "R"
       - name: "HTML/CSS"
       - name: "SQL"
+      - name: "MATLAB"
+      - name: "Simulink"
       - name: "Unity"
         svg: "unity.svg"
   - category: "Backend / Infrastructure"
