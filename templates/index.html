@@ -57,6 +57,83 @@
     font-weight: 400;
   }
 
+  /* ── Growth Chart ────────────────────────────────────── */
+  .chart-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 20px 24px 16px;
+    margin-bottom: 44px;
+  }
+
+  .chart-card__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .chart-grid {
+    stroke: var(--color-border-light);
+    stroke-width: 1;
+  }
+
+  .chart-axis-label {
+    fill: var(--color-text-soft);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .chart-line {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .chart-line--growth,
+  .chart-dot--growth {
+    stroke: var(--color-accent);
+  }
+
+  .chart-line--condition,
+  .chart-dot--condition {
+    stroke: var(--color-text-soft);
+    stroke-dasharray: 4 4;
+  }
+
+  .chart-dot {
+    fill: var(--color-bg-card);
+    stroke-width: 2;
+    stroke-dasharray: none;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: var(--color-text-soft);
+    font-family: var(--font-mono);
+  }
+
+  .chart-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .chart-legend__swatch {
+    width: 14px;
+    height: 2px;
+    background: var(--color-text-soft);
+  }
+
+  .chart-legend__swatch--growth {
+    background: var(--color-accent);
+  }
+
   /* ── Log List ────────────────────────────────────────── */
   .log-list {
     list-style: none;
@@ -211,7 +288,53 @@
   <p class="hero__subtitle">日々の学びを、積み重ねる。</p>
 </section>
 
- 
+{% if chart %}
+<!-- Growth chart -->
+<section id="growth-section">
+  <div class="section-header">
+    <h2 class="section-header__title">Growth</h2>
+    <span class="section-header__count">{{ chart.months }} months</span>
+  </div>
+
+  <div class="chart-card">
+    <svg class="chart-card__svg" viewBox="0 0 {{ chart.width }} {{ chart.height }}"
+         role="img" aria-label="月ごとの成長実感の推移（5段階）">
+      <!-- 目盛り線（1〜5） -->
+      {% for line in chart.gridlines %}
+      <line class="chart-grid" x1="{{ chart.plot_left }}" y1="{{ line.y }}"
+            x2="{{ chart.plot_right }}" y2="{{ line.y }}" />
+      <text class="chart-axis-label" x="{{ chart.axis_x }}" y="{{ line.y + 4 }}"
+            text-anchor="end">{{ line.value }}</text>
+      {% endfor %}
+
+      <!-- 折れ線と各月の点 -->
+      {% for s in chart.series %}
+      <polyline class="chart-line chart-line--{{ s.modifier }}" points="{{ s.polyline }}" />
+      {% for point in s.points %}
+      <circle class="chart-dot chart-dot--{{ s.modifier }}" cx="{{ point.x }}" cy="{{ point.y }}" r="4">
+        <title>{{ s.label }}: {{ point.value }}</title>
+      </circle>
+      {% endfor %}
+      {% endfor %}
+
+      <!-- 月ラベル -->
+      {% for label in chart.labels %}
+      <text class="chart-axis-label" x="{{ label.x }}" y="{{ chart.label_y }}"
+            text-anchor="middle">{{ label.text }}</text>
+      {% endfor %}
+    </svg>
+
+    <div class="chart-legend">
+      {% for s in chart.series %}
+      <span class="chart-legend__item">
+        <span class="chart-legend__swatch chart-legend__swatch--{{ s.modifier }}"></span>{{ s.label }}
+      </span>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- Log list -->
 <section id="log-section">
   <div class="section-header">

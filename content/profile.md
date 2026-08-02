@@ -43,6 +43,8 @@ skills:
       - name: "C言語"
       - name: "R"
       - name: "HTML/CSS"
+      - name: "TypeScript"
+      - name: "React / Next.js"
       - name: "SQL"
       - name: "MATLAB"
       - name: "Simulink"
@@ -80,7 +82,7 @@ skills:
 # About Me
 
 福岡出身。長崎の大学で情報系を専攻し、ゲーム制作サークルでは **Unity** を使った開発に取り組んでいました。  
-2026年に卒業し、現在は関東でエンジニアとして研修中の **社会人1年目** です。
+2026年に卒業し、配属前研修を経て、現在は **神戸** でエンジニアとして働く **社会人1年目** です。
 
 日々の学びや気づきを「**Iterate.log**」として記録しながら、少しずつ成長を積み重ねています。
 
@@ -96,22 +98,17 @@ skills:
 
 ---
 
-## GitHub Stats {: .icon-bar-chart}
+## GitHub — 最近のリポジトリ {: .icon-bar-chart}
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=Myhero2003&show_icons=true&theme=default&bg_color=ffffff&title_color=6C63FF&icon_color=6C63FF&text_color=1A1A2E&border_color=E8E8E8)
+<!--github-repos-->
+
 
 ---
 
 ## note — 最近の記事 {: .icon-edit}
 
-<iframe class="note-embed" src="https://note.com/embed/notes/nff0c645ad080" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
-<script async src="https://note.com/scripts/embed.js" charset="utf-8"></script>
+<!--note-articles-->
 
-<iframe class="note-embed" src="https://note.com/embed/notes/n7a49d7e987f8" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
-<script async src="https://note.com/scripts/embed.js" charset="utf-8"></script>
-
-<iframe class="note-embed" src="https://note.com/embed/notes/n269ea23e6eac" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
-<script async src="https://note.com/scripts/embed.js" charset="utf-8"></script>
 
 ---
 

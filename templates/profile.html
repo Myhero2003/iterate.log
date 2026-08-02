@@ -423,14 +423,73 @@
     transition: box-shadow var(--transition), transform var(--transition);
   }
 
-  /* Make externally embedded stat images (e.g. GitHub readme-stats) clearer */
-  .profile-content img[src*="github-readme-stats"] {
-    max-width: 580px;
+  /* ── GitHub repository list ──────────────────────────── */
+  .repo-list {
+    list-style: none;
+    margin: 16px 0 12px;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .repo-item__link {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     background: var(--color-bg-card);
-    padding: 10px;
-    border-radius: 12px;
-    border: 1px solid var(--color-border-light);
-    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .repo-item__link:hover {
+    border-color: var(--color-accent);
+    background: var(--color-bg-soft);
+  }
+
+  .repo-item__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .repo-item__name {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .repo-item__lang {
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-soft);
+    background: var(--color-bg-soft);
+  }
+
+  .repo-item__desc {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--color-text-soft);
+    line-height: 1.6;
+  }
+
+  .repo-item__date {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-text-soft);
+  }
+
+  .repo-more {
+    margin: 0;
+    font-size: 0.8rem;
   }
 
   .profile-content img:hover {
@@ -494,12 +553,72 @@
     border: 1px solid var(--color-border) !important;
   }
 
-  .profile-content iframe.note-embed {
-    width: 100% !important;
-    max-width: 100% !important;
-    border: 1px solid var(--color-border-light) !important;
+  /* ── note article list ───────────────────────────────── */
+  .note-list {
+    list-style: none;
+    margin: 16px 0 12px;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .note-item__link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-bg-card);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .note-item__link:hover {
+    border-color: var(--color-accent);
+    background: var(--color-bg-soft);
+  }
+
+  .note-item__thumb {
+    flex-shrink: 0;
+    width: 96px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-light);
+    /* .profile-content img の中央寄せ・hover演出を打ち消す */
+    margin: 0;
+    display: block;
+  }
+
+  .note-item__link:hover .note-item__thumb {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .note-item__body {
+    min-width: 0;
+  }
+
+  .note-item__title {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+
+  .note-item__link:hover .note-item__title {
+    color: var(--color-accent);
+  }
+
+  .note-item__date {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-text-soft);
   }
 
   /* ── Responsive ──────────────────────────────────────── */
@@ -546,30 +665,6 @@
     }
   }
 </style>
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  // Replace github-readme-stats images with a friendly fallback on error
-  document.querySelectorAll('img[src*="github-readme-stats"]').forEach(function(img){
-    // If image already failed to load, trigger replacement
-    function replace(){
-      var wrapper = document.createElement('div');
-      wrapper.className = 'github-stats-fallback';
-      wrapper.innerHTML = '<div style="padding:12px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg-card);max-width:580px;">'
-        + '<strong style="display:block;margin-bottom:6px;color:var(--color-text)">GitHub Stats — 現在利用不可</strong>'
-        + '<p style="margin:0;color:var(--color-text-soft)">外部サービスが一時的に利用できません。直接 <a href="https://github.com/Myhero2003" target="_blank" rel="noopener">GitHub を表示</a>してください。</p>'
-        + '</div>';
-      img.replaceWith(wrapper);
-    }
-
-    img.addEventListener('error', replace);
-    // If image has already finished loading but naturalWidth is 0, replace as well
-    if(img.complete && img.naturalWidth === 0){ replace(); }
-  });
-});
-</script>
 {% endblock %}
 
 {% block content %}

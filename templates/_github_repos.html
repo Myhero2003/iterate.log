@@ -1,0 +1,30 @@
+{# GitHubの公開リポジトリ一覧。profile.md の <!--github-repos--> に差し込まれる #}
+{% if repos %}
+<ul class="repo-list">
+  {% for repo in repos %}
+  <li class="repo-item">
+    <a class="repo-item__link" href="{{ repo.url }}" target="_blank" rel="noopener noreferrer">
+      <span class="repo-item__head">
+        <span class="repo-item__name">{{ repo.name }}</span>
+        {% if repo.language %}
+        <span class="repo-item__lang">{{ repo.language }}</span>
+        {% endif %}
+      </span>
+      {% if repo.description %}
+      <span class="repo-item__desc">{{ repo.description }}</span>
+      {% endif %}
+      {% if repo.pushed_at %}
+      <time class="repo-item__date" datetime="{{ repo.pushed_at }}">updated {{ repo.pushed_at }}</time>
+      {% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+<p class="repo-more">
+  <a href="{{ github_url }}" target="_blank" rel="noopener noreferrer">GitHub ですべて見る →</a>
+</p>
+{% else %}
+<p class="repo-more">
+  <a href="{{ github_url }}" target="_blank" rel="noopener noreferrer">GitHub のリポジトリを見る →</a>
+</p>
+{% endif %}

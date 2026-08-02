@@ -1,8 +1,13 @@
 """Iterate.log — Flask application."""
 import datetime as dt
+import email.utils
 import glob
+import json
 import os
 import re
+import urllib.error
+import urllib.request
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import markdown
@@ -189,6 +194,268 @@ def collect_reflections() -> list[dict]:
     return entries
 
 
+# ── External feeds (GitHub / note) ───────────────────────────────────
+
+USER_AGENT = "iterate-log-portfolio"
+FETCH_TIMEOUT = 4
+FEED_CACHE_TTL = dt.timedelta(hours=1)
+
+
+def http_get(url: str, accept: str) -> bytes | None:
+    """Fetch a URL and return its body, or None when anything goes wrong.
+
+    外部サービスが落ちてもページ全体を壊さないよう、例外は握りつぶす。
+    """
+    request = urllib.request.Request(
+        url,
+        headers={"Accept": accept, "User-Agent": USER_AGENT},
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=FETCH_TIMEOUT) as response:
+            return response.read()
+    except (urllib.error.URLError, OSError, TimeoutError):
+        return None
+
+
+def is_cache_fresh(cache: dict) -> bool:
+    """Whether a feed cache entry is still within its TTL."""
+    fetched_at = cache["fetched_at"]
+    return fetched_at is not None and dt.datetime.now() - fetched_at < FEED_CACHE_TTL
+
+
+# ── GitHub repositories ──────────────────────────────────────────────
+
+GITHUB_USERNAME = "Myhero2003"
+GITHUB_URL = f"https://github.com/{GITHUB_USERNAME}"
+GITHUB_API_URL = (
+    f"https://api.github.com/users/{GITHUB_USERNAME}/repos"
+    "?per_page=100&sort=pushed&type=owner"
+)
+GITHUB_REPO_LIMIT = 6
+
+# profile.md 内のこのコメントを、リポジトリ一覧のHTMLに差し替える
+GITHUB_REPOS_PLACEHOLDER = "<!--github-repos-->"
+
+_github_cache: dict = {"fetched_at": None, "repos": []}
+
+
+def fetch_github_repos() -> list[dict]:
+    """Fetch the user's public repositories from the GitHub API.
+
+    非公開リポジトリは取得できない。未認証のAPIは 60リクエスト/時 の制限が
+    あるため1時間キャッシュし、取得に失敗したときは前回の結果
+    （なければ空リスト）を返してページ自体は壊さない。
+    """
+    if is_cache_fresh(_github_cache):
+        return _github_cache["repos"]
+
+    # 次のリクエストで叩き直さないよう、失敗時も時刻だけは更新する
+    _github_cache["fetched_at"] = dt.datetime.now()
+
+    body = http_get(GITHUB_API_URL, "application/vnd.github+json")
+    if body is None:
+        return _github_cache["repos"]
+
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError):
+        return _github_cache["repos"]
+
+    if not isinstance(payload, list):
+        return _github_cache["repos"]
+
+    repos = [
+        {
+            "name": item.get("name", ""),
+            "url": item.get("html_url", ""),
+            "description": item.get("description") or "",
+            "language": item.get("language") or "",
+            "pushed_at": str(item.get("pushed_at", ""))[:10],
+        }
+        for item in payload
+        if isinstance(item, dict) and not item.get("fork") and not item.get("archived")
+    ][:GITHUB_REPO_LIMIT]
+
+    _github_cache["repos"] = repos
+    return repos
+
+
+# ── note articles ────────────────────────────────────────────────────
+
+NOTE_USERNAME = "mahiro05_02"
+NOTE_URL = f"https://note.com/{NOTE_USERNAME}"
+NOTE_RSS_URL = f"{NOTE_URL}/rss"
+NOTE_ARTICLE_LIMIT = 3
+
+# profile.md 内のこのコメントを、note記事一覧のHTMLに差し替える
+NOTE_ARTICLES_PLACEHOLDER = "<!--note-articles-->"
+
+MEDIA_NS = {"media": "http://search.yahoo.com/mrss/"}
+
+_note_cache: dict = {"fetched_at": None, "articles": []}
+
+
+def fetch_note_articles() -> list[dict]:
+    """Fetch the latest note articles from the author's RSS feed.
+
+    GitHubと同じく1時間キャッシュし、失敗時は前回の結果を返す。
+    """
+    if is_cache_fresh(_note_cache):
+        return _note_cache["articles"]
+
+    _note_cache["fetched_at"] = dt.datetime.now()
+
+    body = http_get(NOTE_RSS_URL, "application/rss+xml, application/xml")
+    if body is None:
+        return _note_cache["articles"]
+
+    try:
+        channel = ET.fromstring(body)
+    except ET.ParseError:
+        return _note_cache["articles"]
+
+    articles = []
+    for item in channel.findall("./channel/item")[:NOTE_ARTICLE_LIMIT]:
+        thumbnail = item.find("media:thumbnail", MEDIA_NS)
+        articles.append(
+            {
+                "title": item.findtext("title", default=""),
+                "url": item.findtext("link", default=""),
+                "date": format_rss_date(item.findtext("pubDate")),
+                "thumbnail": thumbnail.text if thumbnail is not None else "",
+            }
+        )
+
+    _note_cache["articles"] = articles
+    return articles
+
+
+def format_rss_date(raw: str | None) -> str:
+    """Convert an RFC 822 pubDate (e.g. 'Sun, 05 Jul 2026 21:11:43 +0900') to YYYY-MM-DD."""
+    if not raw:
+        return ""
+
+    try:
+        return email.utils.parsedate_to_datetime(raw).strftime("%Y-%m-%d")
+    except (TypeError, ValueError):
+        return ""
+
+
+# ── Growth chart ─────────────────────────────────────────────────────
+
+# condition（体調・メンタル）は個人的な指標なので、既定では公開しない。
+# 手元で推移を確認したいときは True にする。
+SHOW_CONDITION = False
+
+# 折れ線グラフの描画領域（SVGのviewBox基準）
+CHART_WIDTH = 680
+CHART_HEIGHT = 200
+CHART_PAD_LEFT = 28
+CHART_PAD_RIGHT = 16
+CHART_PAD_TOP = 16
+CHART_PAD_BOTTOM = 32
+
+SCORE_MIN = 1
+SCORE_MAX = 5
+
+
+def monthly_sort_key(entry: dict) -> tuple[int, int]:
+    """Derive (year, month) from a monthly entry's filename.
+
+    月次ファイルの date は「4月の振り返りを5月1日に書いた」のようにズレることが
+    あるため、iterate-YYYY-MM.md というファイル名の方を月の正としている。
+    """
+    match = re.search(r"(\d{4})-(\d{2})", entry.get("filename", ""))
+    if match:
+        return int(match.group(1)), int(match.group(2))
+
+    fallback = to_date_sort_key(entry.get("date"))
+    return fallback.year, fallback.month
+
+
+def score_to_y(value: float) -> float:
+    """Map a 1-5 score to a Y coordinate inside the chart area."""
+    plot_height = CHART_HEIGHT - CHART_PAD_TOP - CHART_PAD_BOTTOM
+    ratio = (value - SCORE_MIN) / (SCORE_MAX - SCORE_MIN)
+    return CHART_PAD_TOP + (1 - ratio) * plot_height
+
+
+def build_growth_chart(entries: list[dict]) -> dict | None:
+    """Build coordinates for the career_growth / condition line chart.
+
+    Returns None when there are fewer than two months of data
+    (a single point makes no line worth drawing).
+    """
+    months = [e for e in entries if e.get("type") == "monthly"]
+    months.sort(key=monthly_sort_key)
+
+    if len(months) < 2:
+        return None
+
+    plot_width = CHART_WIDTH - CHART_PAD_LEFT - CHART_PAD_RIGHT
+    step = plot_width / (len(months) - 1)
+    xs = [CHART_PAD_LEFT + step * i for i in range(len(months))]
+
+    series_defs = [("career_growth", "成長実感", "growth")]
+    if SHOW_CONDITION:
+        series_defs.append(("condition", "コンディション", "condition"))
+
+    series = []
+    for key, label, modifier in series_defs:
+        points = []
+        for x, entry in zip(xs, months):
+            value = entry.get(key)
+            if value is None:
+                continue
+            points.append(
+                {
+                    "x": round(x, 1),
+                    "y": round(score_to_y(float(value)), 1),
+                    "value": value,
+                }
+            )
+
+        if len(points) < 2:
+            continue
+
+        series.append(
+            {
+                "key": key,
+                "label": label,
+                "modifier": modifier,
+                "polyline": " ".join(f"{p['x']},{p['y']}" for p in points),
+                "points": points,
+            }
+        )
+
+    if not series:
+        return None
+
+    labels = [
+        {"x": round(x, 1), "text": f"{monthly_sort_key(entry)[1]}月"}
+        for x, entry in zip(xs, months)
+    ]
+
+    gridlines = [
+        {"y": round(score_to_y(value), 1), "value": value}
+        for value in range(SCORE_MIN, SCORE_MAX + 1)
+    ]
+
+    return {
+        "width": CHART_WIDTH,
+        "height": CHART_HEIGHT,
+        "label_y": CHART_HEIGHT - CHART_PAD_BOTTOM + 20,
+        "axis_x": CHART_PAD_LEFT - 10,
+        "plot_left": CHART_PAD_LEFT,
+        "plot_right": CHART_WIDTH - CHART_PAD_RIGHT,
+        "series": series,
+        "labels": labels,
+        "gridlines": gridlines,
+        "months": len(months),
+    }
+
+
 def collect_works() -> list[dict]:
     """Scan works/ directory for project Markdown files.
 
@@ -233,7 +500,8 @@ def collect_works() -> list[dict]:
 def index():
     """Landing page — shows all reflections as a clean news-style list."""
     entries = collect_reflections()
-    return render_template("index.html", entries=entries)
+    chart = build_growth_chart(entries)
+    return render_template("index.html", entries=entries, chart=chart)
 
 
 @app.route("/log/<entry_type>/<filename>")
@@ -273,6 +541,23 @@ def profile():
     meta, body = parse_frontmatter(raw)
     content_html = load_markdown_html(body)
     social_links = extract_social_links(raw)
+
+    # 本文中のプレースホルダを、外部から取得した一覧に差し替える
+    if GITHUB_REPOS_PLACEHOLDER in content_html:
+        repos_html = render_template(
+            "_github_repos.html",
+            repos=fetch_github_repos(),
+            github_url=GITHUB_URL,
+        )
+        content_html = content_html.replace(GITHUB_REPOS_PLACEHOLDER, repos_html)
+
+    if NOTE_ARTICLES_PLACEHOLDER in content_html:
+        note_html = render_template(
+            "_note_articles.html",
+            articles=fetch_note_articles(),
+            note_url=NOTE_URL,
+        )
+        content_html = content_html.replace(NOTE_ARTICLES_PLACEHOLDER, note_html)
 
     # Load inline SVG content for identity items
     identity = meta.get("identity", [])
