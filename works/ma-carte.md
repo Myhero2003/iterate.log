@@ -22,6 +22,11 @@ order: 5
 
 **リポジトリ** → [github.com/Myhero2003/MonCafe_myhero](https://github.com/Myhero2003/MonCafe_myhero)
 
+<figure>
+  <img src="/static/img/ma-carte-landing.jpg" alt="Ma Carte のランディングページ。左に「おうちの一杯を、自分だけのカフェメニューに。」の見出し、右に黒板メニュー風のカード。" />
+  <figcaption>ランディングページ。右側の黒板メニューがそのままアプリのコンセプトを表している。</figcaption>
+</figure>
+
 ## 技術構成
 
 | 技術 | 用途 |
@@ -40,6 +45,16 @@ order: 5
 - **公開 / 非公開の制御**: カフェ単位・商品単位の2段階で切り替え。公開URLのコピーにも対応
 - **OGP画像の動的生成**: 公開ページごとに、カフェ名入りのOGP画像を自動生成
 
+<figure>
+  <img src="/static/img/ma-carte-app.jpg" alt="マイカフェの編集画面。左に「メニューを追加」フォーム、右に「本日のおすすめ」と表示切り替えタブ。" />
+  <figcaption>マイカフェの編集画面。左に登録フォーム、右上に「本日のおすすめ」、その下に表示モードの切り替え。</figcaption>
+</figure>
+
+<figure>
+  <img src="/static/img/ma-carte-scroll.jpg" alt="スクロール表示。カテゴリごとにメニューカードが並び、各カードに公開トグルと削除リンクがある。" />
+  <figcaption>スクロール表示。カード単位で公開 / 非公開を切り替えられる。</figcaption>
+</figure>
+
 ## 工夫した点
 
 ### 公開判定をデータベース側に置く
@@ -51,6 +66,11 @@ order: 5
 ### 紙のメニュー帳らしさをどう出すか
 
 冊子表示では、罫線の背景・紙が重なった影・めくりアニメーションを組み合わせて、実際のメニュー帳をめくる感覚に近づけました。1ページあたりの掲載数を固定してページ単位に分割し、めくる方向によってアニメーションを出し分けています。
+
+<figure>
+  <img src="/static/img/ma-carte-booklet.jpg" alt="冊子表示。罫線の入った紙面に2列でメニューが並び、下部に「前へ / 1 / 2 / 次へ」のページ送りがある。" />
+  <figcaption>冊子表示。同じデータを紙のメニュー帳のように見せ、下部でページを送る。</figcaption>
+</figure>
 
 ### 取得と操作の分離
 

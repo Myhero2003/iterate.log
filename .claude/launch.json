@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "iterate-log",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-m", "flask", "--app", "app", "run", "--debug", "--port", "5055"],
+      "port": 5055,
+      "autoPort": false
+    }
+  ]
+}
