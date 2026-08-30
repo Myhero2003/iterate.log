@@ -71,6 +71,8 @@ skills:
         svg: "Figma.svg"
       - name: "Canva"
         svg: "canva.svg"
+      - name: "Affinity"
+      - name: "Cavalry"
       - name: "Blender"
         svg: "blender.svg"
       - name: "DaVinci Resolve"
@@ -95,6 +97,7 @@ skills:
 | **eSports** | スマブラSP・スト6（観戦もプレイも好き） |
 | **カフェ巡り** | 落ち着ける空間を探すのが好き。 |
 | **ゲーム制作** | Unity での開発経験あり。今後も趣味で続けたい |
+| **グラフィック制作** | Affinity でサムネイルや架空の広告デザインを作るのが最近の遊び |
 
 ---
 

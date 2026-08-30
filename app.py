@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent
 CONTENT_DIR = BASE_DIR / "content"
 REFLECTIONS_DIR = BASE_DIR / "reflections"
 WORKS_DIR = BASE_DIR / "works"
+DESIGNS_DIR = CONTENT_DIR / "designs"
 
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -494,6 +495,43 @@ def collect_works() -> list[dict]:
     return entries
 
 
+def collect_designs() -> list[dict]:
+    """Scan content/designs/ for graphic work Markdown files.
+
+    Returns a list of dicts sorted by date descending（新しいものが先頭）。
+    Each dict contains: id, title, role, date, tools, thumbnail, summary.
+    """
+    entries: list[dict] = []
+
+    if not DESIGNS_DIR.is_dir():
+        return entries
+
+    for filepath in glob.glob(str(DESIGNS_DIR / "*.md")):
+        with open(filepath, "r", encoding="utf-8") as f:
+            raw = f.read()
+
+        meta, _body = parse_frontmatter(raw)
+        file_name = Path(filepath).stem
+
+        entries.append(
+            {
+                "id": file_name,
+                "title": meta.get("title") or file_name.replace("-", " "),
+                "role": meta.get("role", ""),
+                "date": str(meta.get("date", "")),
+                "tools": meta.get("tools", []),
+                "thumbnail": meta.get("thumbnail", ""),
+                "summary": meta.get("summary", ""),
+                "_sort_key": to_date_sort_key(meta.get("date")),
+            }
+        )
+
+    entries.sort(key=lambda e: e["_sort_key"], reverse=True)
+    for item in entries:
+        item.pop("_sort_key", None)
+    return entries
+
+
 # ── Routes ───────────────────────────────────────────────────────────
 
 @app.route("/")
@@ -618,6 +656,41 @@ def works_detail(work_id: str):
         meta=meta,
         content=content_html,
         work_id=work_id,
+    )
+
+
+@app.route("/graphics")
+def graphics_index():
+    """Graphics page — shows design pieces as an image-first grid."""
+    designs = collect_designs()
+    return render_template("graphics.html", designs=designs)
+
+
+@app.route("/graphics/<design_id>")
+def graphics_detail(design_id: str):
+    """Graphics detail page — render a single design Markdown as HTML."""
+    if "/" in design_id or design_id.startswith("."):
+        abort(404)
+
+    filepath = DESIGNS_DIR / f"{design_id}.md"
+    if not filepath.is_file():
+        abort(404)
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        raw = f.read()
+
+    meta, body = parse_frontmatter(raw)
+    content_html = load_markdown_html(body)
+
+    # images 未指定なら、サムネイルだけを表示対象にする
+    images = meta.get("images") or ([meta["thumbnail"]] if meta.get("thumbnail") else [])
+
+    return render_template(
+        "graphics_detail.html",
+        meta=meta,
+        content=content_html,
+        images=images,
+        design_id=design_id,
     )
 
 
